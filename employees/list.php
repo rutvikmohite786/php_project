@@ -2,31 +2,76 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../auth.php';
 require_login();
-
-$res = $mysqli->query('SELECT e.*, d.name AS department_name FROM employees e LEFT JOIN departments d ON e.department_id = d.id ORDER BY e.id DESC');
 ?>
 <?php include __DIR__ . '/../header.php'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h3>Employees</h3>
-  <a class="btn btn-success" href="add.php">Add Employee</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0"><i class="bi bi-people me-2"></i>Employees</h3>
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary" href="add.php"><i class="bi bi-plus-lg me-1"></i>Add Employee</a>
+    <a class="btn btn-outline-secondary" href="/php_project/dashboard.php"><i class="bi bi-house me-1"></i>Dashboard</a>
+  </div>
 </div>
-<table class="table table-sm table-striped">
-  <thead><tr><th>ID</th><th>Name</th><th>Dept</th><th>Phone</th><th>Email</th><th>Salary</th><th>Actions</th></tr></thead>
-  <tbody>
-    <?php while ($row = $res->fetch_assoc()): ?>
-      <tr>
-        <td><?= $row['id'] ?></td>
-        <td><?= htmlspecialchars($row['name']) ?></td>
-        <td><?= htmlspecialchars($row['department_name']) ?></td>
-        <td><?= htmlspecialchars($row['phone']) ?></td>
-        <td><?= htmlspecialchars($row['email']) ?></td>
-        <td><?= number_format($row['salary'],2) ?></td>
-        <td>
-          <a class="btn btn-sm btn-primary" href="edit.php?id=<?= $row['id'] ?>">Edit</a>
-          <a class="btn btn-sm btn-danger" href="delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Delete?')">Delete</a>
-        </td>
-      </tr>
-    <?php endwhile; ?>
-  </tbody>
-</table>
+
+<div class="card app-card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table id="employeesTable" class="table table-hover align-middle mb-0">
+        <thead><tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Salary</th>
+          <th class="text-center">Actions</th>
+        </tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  function initDataTable() {
+    if (typeof jQuery !== 'undefined' && typeof jQuery.fn.DataTable !== 'undefined') {
+      jQuery('#employeesTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: 'data.php',
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        order: [[0,'desc']],
+        columnDefs: [
+          { orderable: false, targets: -1 },
+          { type: 'num', targets: 0 },
+          { type: 'currency', targets: 5 }
+        ],
+        language: {
+          processing: "Processing...",
+          search: "Search:",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          infoEmpty: "Showing 0 to 0 of 0 entries",
+          infoFiltered: "(filtered from _MAX_ total entries)",
+          paginate: {
+            first: "First",
+            last: "Last",
+            next: "Next",
+            previous: "Previous"
+          }
+        }
+      });
+    } else {
+      setTimeout(initDataTable, 100);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDataTable);
+  } else {
+    initDataTable();
+  }
+})();
+</script>
 <?php include __DIR__ . '/../footer.php'; ?>

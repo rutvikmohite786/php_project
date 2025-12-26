@@ -13,9 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <?php include __DIR__ . '/../header.php'; ?>
-<h3>Add Department</h3>
-<form method="post">
-  <div class="mb-2"><label>Name</label><input name="name" class="form-control" required></div>
-  <button class="btn btn-primary">Save</button> <a class="btn btn-secondary" href="list.php">Cancel</a>
-</form>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0"><i class="bi bi-building-add me-2"></i>Add Department</h3>
+  <a class="btn btn-outline-secondary" href="list.php"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+</div>
+
+<div class="card app-card">
+  <div class="card-body">
+    <form method="post">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="mb-4">
+            <label class="form-label">Department Name <span class="text-danger">*</span></label>
+            <input name="name" class="form-control form-control-lg" placeholder="Enter department name" required>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-secondary" href="list.php"><i class="bi bi-x-circle me-1"></i>Cancel</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i>Save Department</button>
+      </div>
+    </form>
+  </div>
+</div>
 <?php include __DIR__ . '/../footer.php'; ?>
